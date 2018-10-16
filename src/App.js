@@ -2,13 +2,16 @@ import React, { Component } from 'react';
 
 import Comments from './Comments'
 import NewComment from './NewComment'
-
+import Login from './Login'
 
 
 class App extends Component {
   state = {
     comments: {},
-    isLoading: false
+    isLoading: false,
+    isAuth: false,
+    isAuthError: false,
+    authError: ''
   }
 
   sendComment = comment => {
@@ -21,8 +24,25 @@ class App extends Component {
     database.ref().update(comments)
   }
 
+  login = async (email, passwd) => {
+    const { auth } = this.props;
+    this.setState({
+      authError: '',
+      isAuthError: false
+    })
+    try {
+      await auth.signInWithEmailAndPassword(email, passwd)
+    } catch (err) {
+      console.log(err.code)
+      this.setState({
+        authError: err.code,
+        isAuthError: true
+      })
+    }
+  }
+
   componentDidMount() {
-    const { database } = this.props
+    const { database, auth } = this.props
     this.setState({
       isLoading: true
     })
@@ -33,12 +53,26 @@ class App extends Component {
         isLoading: false
       })
     })
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        this.setState({
+          isAuth: true,
+          user
+        })
+      }
+    })
   }
 
   render() {
     return (
       <div>
-        <NewComment sendComment={this.sendComment} />
+        {
+          !this.state.isAuth && <Login login={this.login} />
+        }
+        {
+          this.state.isAuth &&
+          <NewComment sendComment={this.sendComment} />
+        }
         <Comments comments={this.state.comments} />
         {
           this.state.isLoading && <p>Carregando...</p>
