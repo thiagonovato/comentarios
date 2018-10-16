@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-class Login extends Component {
+class SignUp extends Component {
     state = {
         email: '',
         passwd: ''
@@ -12,29 +12,29 @@ class Login extends Component {
         })
     }
 
-    login = () => [
-        this.props.login(this.state.email, this.state.passwd)
+    createAccount = () => [
+        this.props.createAccount(this.state.email, this.state.passwd)
     ]
 
     render() {
         const errorMessages = {
-            'auth/wrong-password': 'Senha incorreta.',
+            'auth/email-already-in-use': 'Email já existe.',
             'auth/invalid-email': 'E-mail inválido.',
-            'auth/user-not-found': 'E-mail não cadastrado.'
+            'auth/weak-password': 'Senha muito fraca.'
         }
         return (
             <div>
-                <h4>Login</h4>
+                <h4>Criar conta</h4>
                 <input type='text' onChange={this.handleChange('email')} placeholder='email' />
                 <input type='password' onChange={this.handleChange('passwd')} placeholder='senha' />
-                <button type='button' onClick={this.login}>Logar</button>
+                <button type='button' onClick={this.createAccount}>Criar Conta</button>
                 {
-                    this.props.isAuthError && <p>
-                        <b>Erro: </b>{errorMessages[this.props.authError]}</p>
+                    this.props.isSignUpError && <p>
+                        <b>Erro: </b>{errorMessages[this.props.signUpError]}</p>
                 }
-                <button onClick={() => this.props.changeScreen('signup')}>Criar conta</button>
+                <button onClick={() => this.props.changeScreen('login')}>Já tenho conta. Logar!</button>
             </div>
         )
     }
 }
-export default Login
+export default SignUp
