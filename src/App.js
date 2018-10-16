@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import Comments from './Comments'
 import NewComment from './NewComment'
 import Login from './Login'
+import User from './User'
 
 
 class App extends Component {
@@ -11,7 +12,8 @@ class App extends Component {
     isLoading: false,
     isAuth: false,
     isAuthError: false,
-    authError: ''
+    authError: '',
+    user: {}
   }
 
   sendComment = comment => {
@@ -19,7 +21,9 @@ class App extends Component {
     const id = database.ref().child('comments').push().key;
     const comments = {}
     comments['comments/' + id] = {
-      comment
+      comment,
+      email: this.state.user.email,
+      userid: this.state.user.uid
     }
     database.ref().update(comments)
   }
@@ -33,7 +37,6 @@ class App extends Component {
     try {
       await auth.signInWithEmailAndPassword(email, passwd)
     } catch (err) {
-      console.log(err.code)
       this.setState({
         authError: err.code,
         isAuthError: true
@@ -59,24 +62,28 @@ class App extends Component {
           isAuth: true,
           user
         })
+      } else {
+        this.setState({
+          isAuth: false,
+          user: {}
+        })
       }
     })
+  }
+
+  logout = () => {
+    const { auth } = this.props
+    auth.signOut()
   }
 
   render() {
     return (
       <div>
-        {
-          !this.state.isAuth && <Login login={this.login} />
-        }
-        {
-          this.state.isAuth &&
-          <NewComment sendComment={this.sendComment} />
-        }
+        {this.state.isAuth && <User email={this.state.user.email} logout={this.logout} />}
+        {!this.state.isAuth && <Login login={this.login} isAuthError={this.state.isAuthError} authError={this.state.authError} />}
+        {this.state.isAuth && <NewComment sendComment={this.sendComment} />}
         <Comments comments={this.state.comments} />
-        {
-          this.state.isLoading && <p>Carregando...</p>
-        }
+        {this.state.isLoading && <p>Carregando...</p>}
       </div>
     );
   }
