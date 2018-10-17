@@ -20,9 +20,9 @@ export default class NewComment extends Component {
 
     render() {
         return (
-            <div>
-                <textarea value={this.state.newComment} onChange={this.handleChange}></textarea>
-                <button onClick={this.sendComment}>Enviar</button>
+            <div className='form-group'>
+                <textarea className='form-control' value={this.state.newComment} onChange={this.handleChange}></textarea>
+                <button className='btn btn-primary' onClick={this.sendComment}>Enviar</button>
             </div>
         )
     }

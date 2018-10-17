@@ -3,8 +3,10 @@ import React from 'react'
 const User = props => {
     return (
         <div>
-            Usuário: {props.email}
-            <button onClick={props.logout}>Sair</button>
+            <form className='form-inline'>
+                Usuário: {props.email}
+                <button className='btn btn-dark btn-sm' onClick={props.logout}>Sair</button>
+            </form>
         </div>
     )
 }

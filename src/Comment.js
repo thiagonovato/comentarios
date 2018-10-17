@@ -12,9 +12,12 @@ const Comment = ({ c }) => {
         }
     }
     return (
-        <div>
-            {email} - {comment}
-            <hr />
+        <div className='card mt-2'>
+            <div className='card-body'>
+                {comment}
+                <br />
+                <span className='text-muted'>{email}</span>
+            </div>
         </div>
     )
 }
